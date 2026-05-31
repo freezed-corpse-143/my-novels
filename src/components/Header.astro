@@ -1,12 +1,25 @@
 ---
+import { getCollection } from 'astro:content';
 import { SITE_TITLE } from '../consts';
+
+const novels = (await getCollection('novels')).sort(
+	(a, b) => a.data.order - b.data.order,
+);
 ---
 
 <header>
 	<nav>
 		<h2><a href="/">{SITE_TITLE}</a></h2>
 		<div class="nav-links">
-			<a href="/">目录</a>
+			<a href="/">首页</a>
+			<div class="novel-dropdown">
+				<span class="dropdown-trigger">小说 ▾</span>
+				<div class="dropdown-menu">
+					{novels.map((n) => (
+						<a href={`/novels/${n.data.slug}`}>{n.data.title}</a>
+					))}
+				</div>
+			</div>
 			<a href="/about">关于</a>
 		</div>
 	</nav>
@@ -37,8 +50,9 @@ import { SITE_TITLE } from '../consts';
 	.nav-links {
 		display: flex;
 		gap: 0.5em;
+		align-items: center;
 	}
-	.nav-links a {
+	.nav-links > a {
 		padding: 0.4em 0.8em;
 		color: #ccc;
 		text-decoration: none;
@@ -46,8 +60,53 @@ import { SITE_TITLE } from '../consts';
 		font-size: 0.9em;
 		transition: all 0.2s;
 	}
-	.nav-links a:hover {
+	.nav-links > a:hover {
 		color: #e0c080;
 		background: rgba(224, 192, 128, 0.1);
+	}
+	.novel-dropdown {
+		position: relative;
+	}
+	.dropdown-trigger {
+		padding: 0.4em 0.8em;
+		color: #ccc;
+		font-size: 0.9em;
+		cursor: default;
+		border-radius: 4px;
+		transition: all 0.2s;
+	}
+	.novel-dropdown:hover .dropdown-trigger {
+		color: #e0c080;
+		background: rgba(224, 192, 128, 0.1);
+	}
+	.dropdown-menu {
+		position: absolute;
+		top: 100%;
+		right: 0;
+		margin-top: 0.3em;
+		background: #1e1e30;
+		border: 1px solid #333;
+		border-radius: 6px;
+		padding: 0.3em 0;
+		min-width: 120px;
+		display: none;
+		z-index: 10;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+	}
+	.novel-dropdown:hover .dropdown-menu {
+		display: block;
+	}
+	.dropdown-menu a {
+		display: block;
+		padding: 0.5em 1em;
+		color: #ccc;
+		text-decoration: none;
+		font-size: 0.9em;
+		white-space: nowrap;
+		transition: all 0.15s;
+	}
+	.dropdown-menu a:hover {
+		color: #e0c080;
+		background: rgba(224, 192, 128, 0.08);
 	}
 </style>

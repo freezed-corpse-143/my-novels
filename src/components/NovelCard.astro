@@ -1,0 +1,62 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	novel: CollectionEntry<'novels'>;
+}
+
+const { novel } = Astro.props;
+---
+
+<a class="novel-card" href={`/novels/${novel.data.slug}`}>
+	{novel.data.coverImage && (
+		<img class="cover" src={novel.data.coverImage.src} alt={novel.data.title} loading="lazy" />
+	)}
+	<div class="info">
+		<h2 class="title">{novel.data.title}</h2>
+		<p class="author">{novel.data.author}</p>
+		<p class="description">{novel.data.description}</p>
+	</div>
+</a>
+
+<style>
+	.novel-card {
+		display: flex;
+		gap: 1.5em;
+		padding: 1.5em;
+		border: 1px solid #333;
+		border-radius: 8px;
+		text-decoration: none;
+		background: #1e1e30;
+		transition: all 0.25s;
+		align-items: flex-start;
+	}
+	.novel-card:hover {
+		border-color: #c9a75c;
+		background: #252540;
+		transform: translateX(4px);
+	}
+	.cover {
+		width: 80px;
+		height: 106px;
+		object-fit: cover;
+		border-radius: 4px;
+		flex-shrink: 0;
+	}
+	.title {
+		color: #e0c080;
+		font-size: 1.3em;
+		margin: 0 0 0.2em;
+	}
+	.author {
+		color: #777;
+		font-size: 0.9em;
+		margin: 0 0 0.5em;
+	}
+	.description {
+		color: #888;
+		font-size: 0.9em;
+		margin: 0;
+		line-height: 1.6;
+	}
+</style>

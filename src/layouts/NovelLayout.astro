@@ -1,0 +1,93 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+	novel: CollectionEntry<'novels'>;
+}
+
+const { novel } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<BaseHead title={`${novel.data.title} - ${novel.data.author}`} description={novel.data.description} />
+		<style>
+			.novel-hero {
+				text-align: center;
+				padding: 3em 1em 1.5em;
+			}
+			.novel-hero h1 {
+				font-size: 2.2em;
+				margin-bottom: 0.3em;
+				color: #c9a75c;
+				letter-spacing: 0.08em;
+			}
+			.novel-hero .author {
+				color: #666;
+				font-size: 0.95em;
+			}
+			.novel-desc {
+				max-width: 600px;
+				margin: 1.5em auto 0;
+				color: #999;
+				font-size: 0.95em;
+				line-height: 1.8;
+			}
+			.novel-desc :global(p) {
+				text-indent: 2em;
+			}
+			.chapter-list {
+				max-width: 600px;
+				margin: 0 auto;
+				padding: 0 1em;
+			}
+			:global(.chapter-item) {
+				display: block;
+				padding: 1em 1.5em;
+				border-bottom: 1px solid #2a2a3a;
+				text-decoration: none;
+				transition: all 0.2s;
+			}
+			:global(.chapter-item:hover) {
+				background: #1a1a2e;
+			}
+			:global(.chapter-item .title) {
+				color: #e0c080;
+				font-size: 1.1em;
+			}
+			:global(.chapter-item .desc) {
+				color: #777;
+				font-size: 0.85em;
+				margin-top: 0.2em;
+			}
+			.divider {
+				text-align: center;
+				color: #444;
+				padding: 1em 0;
+				font-size: 1.2em;
+				letter-spacing: 0.3em;
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="novel-hero">
+				<h1>{novel.data.title}</h1>
+				<p class="author">—— {novel.data.author} ——</p>
+				<div class="novel-desc">
+					<slot name="novel-desc" />
+				</div>
+			</div>
+			<div class="divider">◆ ◆ ◆</div>
+			<div class="chapter-list">
+				<slot />
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>

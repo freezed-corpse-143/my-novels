@@ -1,0 +1,36 @@
+---
+import { getCollection, render } from 'astro:content';
+import NovelLayout from '../../../layouts/NovelLayout.astro';
+
+export async function getStaticPaths() {
+	const novels = await getCollection('novels');
+	return novels.map((novel) => ({
+		params: { slug: novel.data.slug },
+		props: { novel },
+	}));
+}
+
+const { novel } = Astro.props;
+const chapters = (await getCollection('chapters'))
+	.filter((ch) => ch.id.startsWith(novel.data.slug + '/'))
+	.sort((a, b) => {
+		const oa = a.data.chapterOrder ?? 99;
+		const ob = b.data.chapterOrder ?? 99;
+		return oa - ob || a.data.pubDate.valueOf() - b.data.pubDate.valueOf();
+	});
+
+const { Content } = novel.body ? await render(novel) : { Content: null };
+---
+
+<NovelLayout novel={novel}>
+	{Content && <div slot="novel-desc"><Content /></div>}
+	{chapters.map((ch) => {
+		const chapterSlug = ch.id.split('/').slice(1).join('/');
+		return (
+			<a class="chapter-item" href={`/novels/${novel.data.slug}/${chapterSlug}`}>
+				<div class="title">{ch.data.title}</div>
+				<div class="desc">{ch.data.description}</div>
+			</a>
+		);
+	})}
+</NovelLayout>

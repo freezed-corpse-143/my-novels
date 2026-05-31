@@ -8,4 +8,7 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
 	site: 'https://yuenvjian.vercel.app',
 	integrations: [mdx(), sitemap()],
+	redirects: {
+		'/blog': '/novels/yuenvjian',
+	},
 });

@@ -3,10 +3,12 @@ import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import NovelCard from '../components/NovelCard.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
-const chapters = await getCollection('blog');
-chapters.sort((a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf());
+const novels = (await getCollection('novels')).sort(
+	(a, b) => a.data.order - b.data.order,
+);
 ---
 
 <!doctype html>
@@ -27,41 +29,14 @@ chapters.sort((a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf());
 			.hero .subtitle {
 				color: #888;
 				font-size: 1em;
-				margin-bottom: 0.5em;
 			}
-			.hero .author {
-				color: #666;
-				font-size: 0.95em;
-			}
-			.chapter-list {
-				max-width: 600px;
+			.novel-grid {
+				max-width: 640px;
 				margin: 0 auto;
 				padding: 0 1em;
-			}
-			.chapter-card {
-				display: block;
-				padding: 1.2em 1.5em;
-				margin-bottom: 0.6em;
-				border: 1px solid #333;
-				border-radius: 6px;
-				text-decoration: none;
-				transition: all 0.25s;
-				background: #1e1e30;
-			}
-			.chapter-card:hover {
-				border-color: #c9a75c;
-				background: #252540;
-				transform: translateX(4px);
-			}
-			.chapter-card .chapter-title {
-				color: #e0c080;
-				font-size: 1.15em;
-				font-weight: 600;
-				margin-bottom: 0.3em;
-			}
-			.chapter-card .chapter-desc {
-				color: #888;
-				font-size: 0.85em;
+				display: flex;
+				flex-direction: column;
+				gap: 1em;
 			}
 			.divider {
 				text-align: center;
@@ -76,17 +51,13 @@ chapters.sort((a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf());
 		<Header />
 		<main>
 			<div class="hero">
-				<h1>越女剑</h1>
-				<p class="subtitle">金庸短篇小说</p>
-				<p class="author">—— 春秋末年，越女阿青，一根竹棒，天下无敌 ——</p>
+				<h1>{SITE_TITLE}</h1>
+				<p class="subtitle">{SITE_DESCRIPTION}</p>
 			</div>
 			<div class="divider">◆ ◆ ◆</div>
-			<div class="chapter-list">
-				{chapters.map((ch) => (
-					<a class="chapter-card" href={`/blog/${ch.id}`}>
-						<div class="chapter-title">{ch.data.title}</div>
-						<div class="chapter-desc">{ch.data.description}</div>
-					</a>
+			<div class="novel-grid">
+				{novels.map((novel) => (
+					<NovelCard novel={novel} />
 				))}
 			</div>
 		</main>

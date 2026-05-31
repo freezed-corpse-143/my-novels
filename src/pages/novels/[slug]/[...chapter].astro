@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content';
+import ChapterLayout from '../../../layouts/ChapterLayout.astro';
+
+export async function getStaticPaths() {
+	const chapters = await getCollection('chapters');
+	return chapters.map((ch) => {
+		const parts = ch.id.split('/');
+		return {
+			params: { slug: parts[0], chapter: parts.slice(1).join('/') },
+			props: { chapter: ch },
+		};
+	});
+}
+
+const { chapter } = Astro.props;
+const novelSlug = chapter.id.split('/')[0];
+const novels = await getCollection('novels');
+const novel = novels.find((n) => n.data.slug === novelSlug);
+const { Content } = await render(chapter);
+---
+
+<ChapterLayout
+	title={chapter.data.title}
+	description={chapter.data.description}
+	pubDate={chapter.data.pubDate}
+	novelSlug={novelSlug}
+	novelTitle={novel?.data.title ?? novelSlug}
+>
+	<Content />
+</ChapterLayout>
